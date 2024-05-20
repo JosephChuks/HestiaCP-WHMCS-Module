@@ -1,0 +1,25 @@
+{
+  "schema": "1.0",
+  "type": "whmcs-servers",
+  "name": "hestiacp",
+  "license": "proprietary",
+  "category": "webhosting",
+  "description": {
+    "name": "HestiaCP",
+    "tagline": "A linux based web hosting control panel."
+  },
+  "logo": {
+    "filename": "logo.png"
+  },
+  "support": {
+    "homepage": "https:\/\/www.hestiacp.com\/",
+    "support_url": "https:\/\/www.hestiacp.com\/",
+    "docs_url": "https:\/\/hestiacp.com\/"
+  },
+  "authors": [
+    {
+      "name": "WHMCS",
+      "homepage": "https:\/\/www.whmcs.com\/"
+    }
+  ]
+}
