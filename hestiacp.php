@@ -14,18 +14,24 @@ function hestia_MetaData()
     );
 }
 
-
-
-function hestia_ConfigOptions()
+function hestia_ConfigOptions($params)
 {
-
-    $configarray = array(
-        "Package Name" => array("Type" => "text", "Default" => "default"),
-        "SSH Access" => array("Type" => "yesno", "Description" => "Tick to grant access",),
-        "IP Address (optional)" => array("Type" => "text"),
-    );
-    return $configarray;
+    return [
+        'Package Name' => [
+            'Type' => 'text',
+            'Default' => 'default'
+        ],
+        'SSH Access' => [
+            'Type' => 'yesno',
+            'Description' => 'Tick to grant access',
+            'Default' => 'no'
+        ],
+        'Server IP Address' => [
+            'Type' => 'text',
+        ],
+    ];
 }
+
 
 function hestia_CreateAccount($params)
 {
