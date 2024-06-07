@@ -1,5 +1,8 @@
 <?php
-// HestiaCP WHMCS Module
+/* HestiaCP WHMCS Module 
+   https://github.com/JosephChuks/HestiaCP-WHMCS-Module
+*/
+
 
 function hestia_MetaData()
 {
@@ -13,6 +16,8 @@ function hestia_MetaData()
         'AdminSingleSignOnLabel' => 'Login as Admin'
     );
 }
+
+
 
 function hestia_ConfigOptions($params)
 {
@@ -33,13 +38,21 @@ function hestia_ConfigOptions($params)
 }
 
 
+function hestia_AdminCustomButtonArray()
+{
+    return array(
+        "Install LetsEncrypt SSL" => "InstallSsl",
+    );
+}
+
+
 function hestia_CreateAccount($params)
 {
 
-    // Execute only if there is assigned server
+
     if ($params["server"] == 1) {
 
-        // Prepare variables
+
         $postvars = array(
             'hash' => $params["serveraccesshash"],
             'returncode' => 'yes',
@@ -53,7 +66,7 @@ function hestia_CreateAccount($params)
         );
         $postdata = http_build_query($postvars);
 
-        // Create user account
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'https://' . $params["serverhostname"] . ':' . $params["serverport"] . '/api/');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -123,10 +136,10 @@ function hestia_CreateAccount($params)
 function hestia_TerminateAccount($params)
 {
 
-    // Execute only if there is assigned server
+
     if ($params["server"] == 1) {
 
-        // Prepare variables
+
         $postvars = array(
             'hash' => $params["serveraccesshash"],
             'returncode' => 'yes',
@@ -160,10 +173,10 @@ function hestia_TerminateAccount($params)
 function hestia_SuspendAccount($params)
 {
 
-    // Execute only if there is assigned server
+
     if ($params["server"] == 1) {
 
-        // Prepare variables
+
         $postvars = array(
             'hash' => $params["serveraccesshash"],
             'returncode' => 'yes',
@@ -197,10 +210,10 @@ function hestia_SuspendAccount($params)
 function hestia_UnsuspendAccount($params)
 {
 
-    // Execute only if there is assigned server
+
     if ($params["server"] == 1) {
 
-        // Prepare variables
+
         $postvars = array(
             'hash' => $params["serveraccesshash"],
             'returncode' => 'yes',
@@ -234,10 +247,10 @@ function hestia_UnsuspendAccount($params)
 function hestia_ChangePassword($params)
 {
 
-    // Execute only if there is assigned server
+
     if ($params["server"] == 1) {
 
-        // Prepare variables
+
         $postvars = array(
             'hash' => $params["serveraccesshash"],
             'returncode' => 'yes',
@@ -272,10 +285,10 @@ function hestia_ChangePassword($params)
 function hestia_ChangePackage($params)
 {
 
-    // Execute only if there is assigned server
+
     if ($params["server"] == 1) {
 
-        // Prepare variables
+
         $postvars = array(
             'hash' => $params["serveraccesshash"],
             'returncode' => 'yes',
@@ -297,6 +310,46 @@ function hestia_ChangePackage($params)
     }
 
     logModuleCall('hestia', 'ChangePackage', 'https://' . $params["serverhostname"] . ':' . $params["serverport"] . '/api/' . $postdata, $answer);
+
+    if ($answer == 0) {
+        $result = "success";
+    } else {
+        $result = $answer;
+    }
+
+    return $result;
+}
+
+
+
+function hestia_InstallSsl($params)
+{
+
+
+    if ($params["server"] == 1) {
+
+        $postvars = array(
+            'hash' => $params["serveraccesshash"],
+            'returncode' => 'yes',
+            'cmd' => 'v-add-letsencrypt-domain',
+            'arg1' => $params["username"],
+            'arg2' => $params["domain"],
+            'arg3' => '',
+            'arg4' => 'yes',
+        );
+        $postdata = http_build_query($postvars);
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://' . $params["serverhostname"] . ':' . $params["serverport"] . '/api/');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
+        $answer = curl_exec($curl);
+    }
+
+    logModuleCall('hestia', 'InstallSSL', 'https://' . $params["serverhostname"] . ':' . $params["serverport"] . '/api/' . $postdata, $answer);
 
     if ($answer == 0) {
         $result = "success";
@@ -348,7 +401,6 @@ function hestia_LoginLink($params)
 function hestia_UsageUpdate($params)
 {
 
-    // Prepare variables
     $postvars = array(
         'hash' => $params["serveraccesshash"],
         'returncode' => 'yes',
@@ -357,7 +409,6 @@ function hestia_UsageUpdate($params)
     );
     $postdata = http_build_query($postvars);
 
-    // Get user stats
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, 'https://' . $params["serverhostname"] . ':' . $params["serverport"] . '/api/');
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -367,10 +418,9 @@ function hestia_UsageUpdate($params)
     curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
     $answer = curl_exec($curl);
 
-    // Decode json data
     $results = json_decode($answer, true);
 
-    // Loop through results and update DB
+
     foreach ($results as $user => $values) {
         update_query("tblhosting", array(
             "diskusage" => $values['U_DISK'],
